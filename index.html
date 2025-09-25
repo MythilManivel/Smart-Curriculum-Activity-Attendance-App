@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance System - Advanced Demo</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script type="module" src="firebase-config.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Smart Attendance System</h1>
+            <p>Advanced Demo with Face Recognition & Location Verification</p>
+        </header>
+
+        <nav class="main-nav">
+            <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
+            <button class="nav-btn" onclick="showPage('enroll')">👤 Enroll Student</button>
+            <button class="nav-btn" onclick="showPage('attendance')">✅ Mark Attendance</button>
+            <button class="nav-btn" onclick="showPage('admin')">⚙️ Admin Panel</button>
+        </nav>
+
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <div class="welcome-section">
+                <h2>Welcome to Smart Attendance System</h2>
+                <p>An advanced attendance tracking system with biometric verification and location-based security.</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">👤</div>
+                        <h3>Face Enrollment</h3>
+                        <p>Multi-angle face capture for secure student registration</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Face Recognition</h3>
+                        <p>Real-time face matching for accurate attendance marking</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📍</div>
+                        <h3>Location Verification</h3>
+                        <p>GPS-based location checking to prevent proxy attendance</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Analytics Dashboard</h3>
+                        <p>Comprehensive attendance reports and insights</p>
+                    </div>
+                </div>
+
+                <div class="demo-stats">
+                    <h3>System Status</h3>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalEnrolled">0</span>
+                            <span class="stat-label">Students Enrolled</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="todayAttendance">0</span>
+                            <span class="stat-label">Today's Attendance</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="systemStatus">🟢</span>
+                            <span class="stat-label">System Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enroll Page -->
+        <div id="enroll" class="page">
+            <div class="page-header">
+                <h2>👤 Student Enrollment</h2>
+                <p>Capture multi-angle face data for secure attendance tracking</p>
+            </div>
+
+            <div class="enroll-container">
+                <div class="student-info">
+                    <input type="text" id="studentName" placeholder="Enter student name (e.g., Sanjay)" class="name-input">
+                    <button id="startEnrollment" class="primary-btn">Start Enrollment</button>
+                </div>
+
+                <div id="cameraSection" class="camera-section hidden">
+                    <div class="camera-container">
+                        <video id="video" autoplay muted playsinline></video>
+                        <canvas id="canvas"></canvas>
+                    </div>
+                    
+                    <div class="enrollment-steps">
+                        <div class="step active" id="step1">
+                            <span class="step-number">1</span>
+                            <span class="step-text">Look straight at the camera</span>
+                        </div>
+                        <div class="step" id="step2">
+                            <span class="step-number">2</span>
+                            <span class="step-text">Turn your head LEFT</span>
+                        </div>
+                        <div class="step" id="step3">
+                            <span class="step-number">3</span>
+                            <span class="step-text">Turn your head RIGHT</span>
+                        </div>
+                        <div class="step" id="step4">
+                            <span class="step-number">4</span>
+                            <span class="step-text">Look UP</span>
+                        </div>
+                        <div class="step" id="step5">
+                            <span class="step-number">5</span>
+                            <span class="step-text">Look DOWN</span>
+                        </div>
+                    </div>
+
+                    <div class="enrollment-controls">
+                        <button id="captureFrame" class="capture-btn">📸 Capture Frame</button>
+                        <button id="saveEnrollment" class="save-btn hidden">💾 Save Enrollment</button>
+                        <button id="cancelEnrollment" class="cancel-btn">❌ Cancel</button>
+                    </div>
+
+                    <div id="enrollmentProgress" class="progress-container hidden">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-text">Capturing face data...</span>
+                    </div>
+                </div>
+
+                <div id="enrollmentSuccess" class="success-message hidden">
+                    <div class="success-icon">✅</div>
+                    <h3>Enrollment Successful!</h3>
+                    <p id="enrolledStudentName"></p>
+                    <button onclick="resetEnrollment()" class="primary-btn">Enroll Another Student</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Page -->
+        <div id="attendance" class="page">
+            <div class="page-header">
+                <h2>✅ Mark Attendance</h2>
+                <p>Face recognition + location verification for secure attendance</p>
+            </div>
+
+            <div class="attendance-container">
+                <div class="attendance-steps">
+                    <div class="att-step active" id="attStep1">
+                        <span class="att-step-number">1</span>
+                        <span class="att-step-text">Verify Location</span>
+                    </div>
+                    <div class="att-step" id="attStep2">
+                        <span class="att-step-number">2</span>
+                        <span class="att-step-text">Face Recognition</span>
+                    </div>
+                    <div class="att-step" id="attStep3">
+                        <span class="att-step-number">3</span>
+                        <span class="att-step-text">Mark Attendance</span>
+                    </div>
+                </div>
+
+                <div id="locationCheck" class="location-section">
+                    <h3>📍 Location Verification</h3>
+                    <p>Please allow location access to verify you're in the correct area</p>
+                    <button id="checkLocation" class="primary-btn">Check My Location</button>
+                    <div id="locationStatus" class="location-status hidden"></div>
+                </div>
+
+                <div id="faceRecognition" class="face-recognition-section hidden">
+                    <div class="camera-container">
+                        <video id="attendanceVideo" autoplay muted playsinline></video>
+                        <canvas id="attendanceCanvas"></canvas>
+                    </div>
+                    
+                    <div class="recognition-prompt">
+                        <h3>🎯 Face Recognition</h3>
+                        <p id="recognitionInstruction">Please look at the camera and turn your head slowly</p>
+                        <div id="recognitionStatus" class="recognition-status"></div>
+                    </div>
+
+                    <div class="recognition-controls">
+                        <button id="startRecognition" class="primary-btn">Start Recognition</button>
+                        <button id="cancelAttendance" class="cancel-btn">Cancel</button>
+                    </div>
+                </div>
+
+                <div id="attendanceResult" class="attendance-result hidden">
+                    <div id="resultIcon" class="result-icon"></div>
+                    <h3 id="resultTitle"></h3>
+                    <p id="resultMessage"></p>
+                    <button onclick="resetAttendance()" class="primary-btn">Mark Another Attendance</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Page -->
+        <div id="admin" class="page">
+            <div class="page-header">
+                <h2>⚙️ Admin Panel</h2>
+                <p>Manage system settings and view attendance records</p>
+            </div>
+
+            <div class="admin-container">
+                <div class="admin-section">
+                    <h3>📍 Set Allowed Location</h3>
+                    <div class="location-settings">
+                        <div class="location-inputs">
+                            <input type="number" id="adminLat" placeholder="Latitude" step="any">
+                            <input type="number" id="adminLng" placeholder="Longitude" step="any">
+                            <input type="number" id="adminRadius" placeholder="Radius (meters)" value="100">
+                        </div>
+                        <button id="setLocation" class="primary-btn">Set Location</button>
+                        <button id="useCurrentLocation" class="secondary-btn">Use Current Location</button>
+                    </div>
+                    <div id="currentLocationInfo" class="location-info hidden"></div>
+                </div>
+
+                <div class="admin-section">
+                    <h3>👥 Enrolled Students <button onclick="refreshAdminData()" class="refresh-btn">🔄 Refresh</button></h3>
+                    <div id="studentsList" class="students-list">
+                        <p>Loading students...</p>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3>📊 Attendance Records <button onclick="refreshAdminData()" class="refresh-btn">🔄 Refresh</button></h3>
+                    <div id="attendanceRecords" class="attendance-records">
+                        <p>Loading records...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="face-recognition.js"></script>
+    <script src="geolocation.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
