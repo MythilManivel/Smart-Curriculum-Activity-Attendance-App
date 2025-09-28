@@ -1,78 +1,26 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const express = require('express');
+const router = express.Router();
+const { 
+  register, 
+  login, 
+  getUserProfile, 
+  updateUserProfile 
+} = require('../controllers/authController');
+const { facultyLogin, getFacultyProfile } = require('../controllers/facultyController');
+const { protect, authorize } = require('../middleware/auth');
+const { validateFacultyLogin } = require('../middleware/validators/facultyValidator');
 
-// Middleware to protect routes
-exports.protect = async (req, res, next) => {
-  let token;
+// Public routes
+router.post('/register', register);
+router.post('/login', login);
+router.post('/faculty/login', validateFacultyLogin, facultyLogin);
 
-  // Get token from header
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      // Get token from header
-      token = req.headers.authorization.split(' ')[1];
+// Protected routes
+router.route('/profile')
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile);
 
-      // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+// Faculty protected routes (using 'teacher' role)
+router.get('/faculty/profile', protect, authorize('teacher'), getFacultyProfile);
 
-      // Get user from the token
-      req.user = await User.findById(decoded.id).select('-password');
-
-      next();
-    } catch (error) {
-      console.error(error);
-      res.status(401).json({ message: 'Not authorized, token failed' });
-    }
-  }
-
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
-  }
-};
-
-// Middleware to check if user is a teacher
-exports.teacher = (req, res, next) => {
-  if (req.user && (req.user.role === 'teacher' || req.user.role === 'admin')) {
-    next();
-  } else {
-    res.status(403).json({ message: 'Not authorized as a teacher' });
-  }
-};
-
-// Middleware to check if user is a student
-exports.student = (req, res, next) => {
-  if (req.user && req.user.role === 'student') {
-    next();
-  } else {
-    res.status(403).json({ message: 'Not authorized as a student' });
-  }
-};
-
-// Middleware to check if user is an admin
-exports.admin = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
-    next();
-  } else {
-    res.status(403).json({ message: 'Not authorized as an admin' });
-  }
-};
-
-// Role-based authorization middleware
-exports.authorize = (...roles) => {
-  return (req, res, next) => {
-    if (!req.user) {
-      return res.status(401).json({ 
-        success: false,
-        message: 'Not authorized to access this route' 
-      });
-    }
-
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ 
-        success: false,
-        message: `User role ${req.user.role} is not authorized to access this route` 
-      });
-    }
-    
-    next();
-  };
-};
+module.exports = router;
