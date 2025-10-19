@@ -32,11 +32,6 @@ export default function AttendanceHistory() {
     const fetchAttendance = async () => {
       try {
         setLoading(true);
-        
-        // In a real app, you would fetch this from your API
-        // const response = await axios.get('/api/attendance/student/history');
-        
-        // Mock data for demonstration
         setTimeout(() => {
           const mockData = [
             {
