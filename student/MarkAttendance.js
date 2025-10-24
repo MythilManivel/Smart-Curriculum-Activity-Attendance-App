@@ -25,9 +25,8 @@ import QrScanner from 'qr-scanner';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-// Default coordinates (used as fallback)
 const DEFAULT_COORDS = {
-  latitude: 28.6139,  // Example: New Delhi
+  latitude: 28.6139,  
   longitude: 77.2090,
   accuracy: 100,     // Default accuracy in meters
   maxDistance: 50    // Default max allowed distance in meters
