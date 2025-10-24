@@ -32,7 +32,6 @@ const DEFAULT_COORDS = {
   maxDistance: 50    // Default max allowed distance in meters
 };
 
-// Helper function to calculate distance between two points (Haversine formula)
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371e3; // Earth's radius in meters
   const φ1 = (lat1 * Math.PI) / 180; // Convert to radians
