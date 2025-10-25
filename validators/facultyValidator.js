@@ -13,8 +13,7 @@ exports.validateFacultyLogin = [
   body('password')
     .notEmpty()
     .withMessage('Password is required'),
-    
-  // Location validation
+  
   body('location')
     .exists()
     .withMessage('Location data is required')
@@ -54,7 +53,6 @@ exports.validateFacultyLogin = [
     .isFloat({ min: 0 })
     .withMessage('Accuracy must be a positive number'),
     
-  // Middleware to handle validation errors
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
