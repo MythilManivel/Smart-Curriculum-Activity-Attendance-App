@@ -49,8 +49,6 @@ export default function SessionDetails() {
   const [copied, setCopied] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  
-  // Check if we should show the QR tab by default
   useEffect(() => {
     if (location.search.includes('tab=qr')) {
       setActiveTab('qr');
