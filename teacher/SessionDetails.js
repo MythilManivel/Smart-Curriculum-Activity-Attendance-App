@@ -542,8 +542,6 @@ export default function SessionDetails() {
           </div>
         </Modal.Body>
       </Modal>
-      
-      {/* Delete Confirmation Modal */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Delete Session</Modal.Title>
