@@ -54,8 +54,6 @@ export default function SessionDetails() {
       setActiveTab('qr');
     }
   }, [location]);
-  
-  // Fetch session and attendance data
   useEffect(() => {
     const fetchSessionData = async () => {
       try {
