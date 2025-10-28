@@ -40,8 +40,7 @@ exports.validateFacultyLogin = [
       );
     })
     .withMessage('Invalid coordinates. Longitude must be between -180 and 180, and latitude between -90 and 90'),
-    
-  // Accuracy validation (optional)
+  
   body('location.accuracy')
     .optional({ checkFalsy: true })
     .isNumeric()
