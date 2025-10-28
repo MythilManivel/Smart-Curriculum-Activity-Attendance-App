@@ -1,6 +1,5 @@
 const { body, validationResult } = require('express-validator');
 exports.validateFacultyLogin = [
-  // Email validation
   body('email')
     .trim()
     .isEmail()
