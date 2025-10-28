@@ -1,6 +1,4 @@
 const { body, validationResult } = require('express-validator');
-
-// Validation rules for faculty login
 exports.validateFacultyLogin = [
   // Email validation
   body('email')
