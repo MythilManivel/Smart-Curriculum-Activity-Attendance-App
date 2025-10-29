@@ -68,8 +68,6 @@ export default function SessionDetails() {
         }
         
         setSession(foundSession);
-        
-        // Fetch attendance records for this session
         const recordsRes = await axios.get(`/api/attendance/sessions/${sessionId}/records`);
         setRecords(recordsRes.data.records || []);
         
@@ -153,8 +151,6 @@ export default function SessionDetails() {
       ];
       csvContent += row.join(',') + '\r\n';
     });
-    
-    // Create download link
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
