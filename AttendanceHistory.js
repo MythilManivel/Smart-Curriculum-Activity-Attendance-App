@@ -98,8 +98,7 @@ export default function AttendanceHistory() {
           
           setAttendance(mockData);
           setFilteredAttendance(mockData);
-          
-          // Extract unique subjects
+        
           const uniqueSubjects = [...new Set(mockData.map(item => item.subject))];
           setSubjects(uniqueSubjects);
           
