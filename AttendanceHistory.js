@@ -26,8 +26,7 @@ export default function AttendanceHistory() {
   });
   
   const navigate = useNavigate();
-  
-  // Fetch attendance history
+
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
