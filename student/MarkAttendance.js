@@ -28,8 +28,8 @@ import { toast } from 'react-toastify';
 const DEFAULT_COORDS = {
   latitude: 28.6139,  
   longitude: 77.2090,
-  accuracy: 100,     // Default accuracy in meters
-  maxDistance: 50    // Default max allowed distance in meters
+  accuracy: 100,   
+  maxDistance: 50   
 };
 
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
