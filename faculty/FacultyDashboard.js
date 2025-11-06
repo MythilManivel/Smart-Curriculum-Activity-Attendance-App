@@ -7,7 +7,6 @@ import { FaQrcode, FaMapMarkerAlt, FaSyncAlt, FaClipboard, FaCheck } from 'react
 import QRCode from 'qrcode.react';
 
 const FacultyDashboard = () => {
-  // State hooks must be called at the top level
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [qrData, setQrData] = useState('');
